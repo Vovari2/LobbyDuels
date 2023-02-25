@@ -18,7 +18,7 @@ public class TextUtils {
         return "<hover:show_text:'<green>Принять вызов на дуэль'><click:run_command:/ld accept " + player +"><bold><green>[✓]</click></hover>";
     }
     public static String getButtonRefuse(String player){
-        return "<hover:show_text:'<red>Отказаться от вызова на дуэль'><click:run_command:/ld refuse " + player +"><bold><red>[×]</click></hover>";
+        return "<hover:show_text:'<red>Отказаться от вызова на дуэль'><click:run_command:/ld cancel " + player +"><bold><red>[×]</click></hover>";
     }
 
     public static String getGradient(){

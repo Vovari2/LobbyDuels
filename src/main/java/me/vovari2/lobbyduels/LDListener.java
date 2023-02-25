@@ -26,7 +26,7 @@ public class LDListener implements Listener {
 
         String damagerName = damager.getName();
 
-        TextUtils.sendPlayerChatMessage(player, TextUtils.getGradient() + "Игрок " + damagerName + " вызвал вас на дуэль</gradient> " + TextUtils.getButtonAccept(damagerName) + " " + TextUtils.getButtonRefuse(damagerName));
+        TextUtils.sendPlayerChatMessage(player, TextUtils.getGradient() + "Игрок <gray>" + damagerName + "</gray> вызвал вас на дуэль</gradient> " + TextUtils.getButtonAccept(damagerName) + " " + TextUtils.getButtonRefuse(damagerName));
         plugin.requests.add(new LDRequest(player, damager));
     }
 }

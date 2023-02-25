@@ -1,6 +1,5 @@
 package me.vovari2.lobbyduels;
 
-import com.sun.org.apache.bcel.internal.generic.LDC;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,55 +20,55 @@ public class LDCommands implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        if (args.length > 2){
-            TextUtils.sendPlayerErrorMessage(player, "Слишком много параметров!");
+        if (args.length < 1){
+            TextUtils.sendPlayerErrorMessage(player, "Команда введена неверно!");
             return true;
         }
 
-        if (args.length > 0){
-            if (args[0].equals("accept")){
-                LDRequest request;
-                if (args.length == 2){
-                    request = plugin.getRequest(player.getName(), args[1]);
-                    if (request == null){
-                        TextUtils.sendPlayerErrorMessage(player, "Вы не имеете брошенных вам вызовов от этого игрока!");
-                        return true;
-                    }
+        if (args[0].equals("accept")){
+            LDRequest request;
+            if (args.length == 2){
+                request = plugin.getRequest(player.getName(), args[1]);
+                if (request == null){
+                    TextUtils.sendPlayerErrorMessage(player, "Вы не имеете брошенных вам вызовов от этого игрока!");
+                    return true;
                 }
-                else {
-                    request = plugin.getRequest(player.getName());
-                    if (request == null){
-                        TextUtils.sendPlayerErrorMessage(player, "Вы не имеете брошенных вам вызовов!");
-                        return true;
-                    }
-                }
-
-                TextUtils.sendPlayerChatMessage(player, TextUtils.getGradient() + "Вы приняли вызов игрока " + request.getPlayerFrom().getName() + " </gradient>");
-                return true;
             }
-            if (args[0].equals("cancel")){
-                LDRequest request;
-                if (args.length == 2){
-                    request = plugin.getRequest(player.getName(), args[1]);
-                    if (request == null){
-                        TextUtils.sendPlayerErrorMessage(player, "Вы не имеете брошенных вам вызовов от этого игрока!");
-                        return true;
-                    }
+            else {
+                request = plugin.getRequest(player.getName());
+                if (request == null){
+                    TextUtils.sendPlayerErrorMessage(player, "Вы не имеете брошенных вам вызовов!");
+                    return true;
                 }
-                else {
-                    request = plugin.getRequest(player.getName());
-                    if (request == null){
-                        TextUtils.sendPlayerErrorMessage(player, "Вы не имеете брошенных вам вызовов!");
-                        return true;
-                    }
-                }
-
-                plugin.requests.remove(request);
-                TextUtils.sendPlayerChatMessage(player, TextUtils.getGradient() + "Вы отклонил вызов игрока " + request.getPlayerFrom().getName() + " </gradient>");
-                TextUtils.sendPlayerChatMessage(request.getPlayerFrom(), TextUtils.getGradient() + "Игрок " + request.getPlayerTo().getName() + " ваш вызов на дуэль! </gradient>");
-                return true;
             }
+
+            TextUtils.sendPlayerChatMessage(player, TextUtils.getGradient() + "Вы приняли вызов игрока <gray>" + request.getPlayerFrom().getName() + "</gray> </gradient>");
+            TextUtils.sendPlayerChatMessage(request.getPlayerFrom(), TextUtils.getGradient() + "Игрок <gray>" + request.getPlayerTo().getName() + "</gray> принял ваш вызов на дуэль </gradient>");
+            return true;
         }
+        if (args[0].equals("cancel")){
+            LDRequest request;
+            if (args.length == 2){
+                request = plugin.getRequest(player.getName(), args[1]);
+                if (request == null){
+                    TextUtils.sendPlayerErrorMessage(player, "Вы не имеете брошенных вам вызовов от этого игрока!");
+                    return true;
+                }
+            }
+            else {
+                request = plugin.getRequest(player.getName());
+                if (request == null){
+                    TextUtils.sendPlayerErrorMessage(player, "Вы не имеете брошенных вам вызовов!");
+                    return true;
+                }
+            }
+
+            plugin.requests.remove(request);
+            TextUtils.sendPlayerChatMessage(player, TextUtils.getGradient() + "Вы отклонил вызов игрока <gray>" + request.getPlayerFrom().getName() + "</gray> </gradient>");
+            TextUtils.sendPlayerChatMessage(request.getPlayerFrom(), TextUtils.getGradient() + "Игрок <gray>" + request.getPlayerTo().getName() + "</gray> отклонил ваш вызов на дуэль </gradient>");
+            return true;
+        }
+        TextUtils.sendPlayerErrorMessage(player, "Команда введена неверно!");
 
         return true;
     }

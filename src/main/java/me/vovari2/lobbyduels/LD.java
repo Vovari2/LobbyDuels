@@ -1,13 +1,12 @@
 package me.vovari2.lobbyduels;
 
+import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.InvalidPropertiesFormatException;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class LD extends JavaPlugin {
@@ -17,14 +16,18 @@ public final class LD extends JavaPlugin {
         return plugin;
     }
 
-    public List<LDRequest> requests;
+    public World world;
     public int delayRequests;
+
+    public List<LDRequest> requests;
 
     public LDTaskSeconds taskSeconds;
 
     @Override
     public void onEnable() {
         plugin = this;
+
+        requests = new ArrayList<>();
 
         // Загрузка конфигов
         File file = new File(getDataFolder(), "config.yml");
@@ -34,8 +37,16 @@ public final class LD extends JavaPlugin {
         try{ getConfig().load(file); }
         catch(InvalidConfigurationException | IOException error){ TextUtils.sendConsoleWarningMessage("Не удалось загрузить файл \"config.yml\": \n" + error.getMessage()); }
 
+        String worldName = getConfig().getString("world");
+        if (worldName == null)
+            TextUtils.sendConsoleWarningMessage("Мир в конфиге указан не верно!");
+        else world = getServer().getWorld(worldName);
+
+        delayRequests = getConfig().getInt("delay_request");
 
         getServer().getPluginManager().registerEvents(new LDListener(plugin), plugin);
+        getCommand("lobbyduels").setExecutor(new LDCommands(plugin));
+        getCommand("lobbyduels").setTabCompleter(new LDTabCompleter());
 
         taskSeconds = new LDTaskSeconds(plugin);
         taskSeconds.runTaskTimer(this, 20L, 20L);
