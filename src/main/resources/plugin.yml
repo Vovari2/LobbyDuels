@@ -1,0 +1,4 @@
+name: LobbyDuels
+version: '${project.version}'
+main: me.vovari2.lobbyduels.LD
+api-version: 1.19
