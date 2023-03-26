@@ -1,15 +1,16 @@
 package me.vovari2.lobbyduels;
 
 import me.vovari2.lobbyduels.utils.ConfigUtils;
+import me.vovari2.lobbyduels.utils.InventoryUtils;
 import me.vovari2.lobbyduels.utils.TextUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.World;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 
 public final class LD extends JavaPlugin {
 
@@ -39,7 +40,10 @@ public final class LD extends JavaPlugin {
         } catch(LDException error){
             TextUtils.sendWarningMessage(error.getMessage());
             plugin.getServer().getPluginManager().disablePlugin(plugin);
+            return;
         }
+
+        InventoryUtils.Initialization();
 
         requests = new ArrayList<>();
         duels = new ArrayList<>();
@@ -69,20 +73,11 @@ public final class LD extends JavaPlugin {
                         return request;
         return null;
     }
-    public LDRequest getRequest(String playerTo, String playerFrom){
+    public LDRequest getRequest(String player1, String plaer2){
         for (LDRequest request : requests)
-            if (playerTo.equals(request.getPlayerTo().getName()) && playerFrom.equals(request.getPlayerFrom().getName()))
+            if (player1.equals(request.getPlayerTo().getName()) && plaer2.equals(request.getPlayerFrom().getName()) || plaer2.equals(request.getPlayerTo().getName()) && player1.equals(request.getPlayerFrom().getName()))
                 return request;
         return null;
-    }
-    public boolean hasRequest(String playerTo, String playerFrom) {
-        if (requests.isEmpty())
-            return false;
-
-        for (LDRequest request : requests)
-            if (request.equals(playerTo, playerFrom))
-                return true;
-        return false;
     }
 
     public LDDuel getDuel(String player){
@@ -95,8 +90,8 @@ public final class LD extends JavaPlugin {
     public static LD getInstance(){
         return plugin;
     }
-    public static Logger getServerLogger(){
-        return plugin.getServer().getLogger();
+    public static ConsoleCommandSender getConsoleSender(){
+        return plugin.getServer().getConsoleSender();
     }
     public static HashMap<String, Component> getLocaleStrings(){
         return plugin.localeStrings;

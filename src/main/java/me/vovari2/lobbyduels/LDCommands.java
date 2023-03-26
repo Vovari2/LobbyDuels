@@ -29,7 +29,7 @@ public class LDCommands implements CommandExecutor {
         if (args[0].equals("accept")){
             LDRequest request;
             if (args.length == 2){
-                request = plugin.getRequest(player.getName(), args[1]);
+                request = plugin.getRequest(args[1], player.getName());
                 if (request == null){
                     player.sendMessage(LD.getLocaleStrings().get("command.have_not_request_from_player"));
                     return true;
@@ -43,6 +43,9 @@ public class LDCommands implements CommandExecutor {
                 }
             }
 
+            if (request.isCancel)
+                player.sendMessage(LD.getLocaleTexts().get("command.have_not_request_for_you"));
+
             Player playerTo = request.getPlayerTo(),
                     playerFrom = request.getPlayerFrom();
 
@@ -50,6 +53,7 @@ public class LDCommands implements CommandExecutor {
                 player.sendMessage(LD.getLocaleStrings().get("command.distance_too_big"));
                 return true;
             }
+
 
             LDDuel.startDuel(request);
 
@@ -60,7 +64,7 @@ public class LDCommands implements CommandExecutor {
         if (args[0].equals("cancel")){
             LDRequest request;
             if (args.length == 2){
-                request = plugin.getRequest(player.getName(), args[1]);
+                request = plugin.getRequest(args[1], player.getName());
                 if (request == null){
                     player.sendMessage(LD.getLocaleStrings().get("command.have_not_request_from_player"));
                     return true;
@@ -74,10 +78,14 @@ public class LDCommands implements CommandExecutor {
                 }
             }
 
+            if (request.isCancel)
+                player.sendMessage(LD.getLocaleTexts().get("command.have_not_request_for_you"));
+
             Player playerTo = request.getPlayerTo(),
                     playerFrom = request.getPlayerFrom();
 
-            plugin.requests.remove(request);
+            request.periodSecond = LDTaskSeconds.seconds;
+            request.isCancel = true;
 
             if (player == playerTo){
                 TextUtils.sendPlayerMessage(playerTo, LD.getLocaleTexts().get("command.you_cancel_player_request").replaceAll("%player%", playerFrom.getName()));

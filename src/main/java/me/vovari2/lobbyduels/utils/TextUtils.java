@@ -14,9 +14,9 @@ public class TextUtils {
         sender.sendMessage(MiniMessage.miniMessage().deserialize(message));
     }
     public static void sendInfoMessage(String message){
-        LD.getServerLogger().info(message);
+        LD.getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize("[LobbyDuels] <green>" + message));
     }
     public static void sendWarningMessage(String message){
-        LD.getServerLogger().warning(message);
+        LD.getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize("[LobbyDuels] <yellow>" + message));
     }
 }

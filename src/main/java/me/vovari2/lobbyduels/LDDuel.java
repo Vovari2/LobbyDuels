@@ -2,23 +2,19 @@ package me.vovari2.lobbyduels;
 
 import me.vovari2.lobbyduels.utils.InventoryUtils;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.Inventory;
 
 public class LDDuel {
     public boolean isGo;
-
-    public InventoryView inventoryView;
+    public Inventory inventory;
 
     private final Player playerTo;
     private final Player playerFrom;
 
     public int[] votes;
 
-    public LDDuel(Player playerTo, Player playerFrom, InventoryView inventoryView){
-
-        isGo = false;
-
-        this.inventoryView = inventoryView;
+    public LDDuel(Player playerTo, Player playerFrom, Inventory inventory){
+        this.inventory = inventory;
 
         this.playerTo = playerTo;
         this.playerFrom = playerFrom;
@@ -35,8 +31,9 @@ public class LDDuel {
 
     public static void startDuel(LDRequest request){
         Player playerTo = request.getPlayerTo(), playerFrom = request.getPlayerFrom();
-        InventoryView inventoryView = playerTo.openInventory(InventoryUtils.openVotesInventory(playerTo));
-        playerFrom.openInventory(inventoryView);
-        LD.getInstance().duels.add(new LDDuel(playerTo, playerFrom, inventoryView));
+        Inventory inventory = InventoryUtils.openVotesInventory(playerTo);
+        playerTo.openInventory(inventory);
+        playerFrom.openInventory(inventory);
+        LD.getInstance().duels.add(new LDDuel(playerTo, playerFrom, inventory));
     }
 }

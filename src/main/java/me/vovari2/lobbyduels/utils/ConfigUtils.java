@@ -24,8 +24,11 @@ public class ConfigUtils {
         dataFolder = LD.getInstance().getDataFolder();
 
         // Загрузка основного файла конфигурации
+        if (dataFolder.mkdir())
+            TextUtils.sendInfoMessage("Folder \"LobbyDuels\" in \"plugins\" was created!");
+
         File file = new File(dataFolder, "config.yml");
-        if (file.exists())
+        if (!file.exists())
             LD.getInstance().saveResource("config.yml", false);
         FileConfiguration config = loadConfiguration(file);
 
@@ -35,7 +38,7 @@ public class ConfigUtils {
         if (new File(dataFolder, "locales").mkdir())
             TextUtils.sendInfoMessage("Folder \"locales\" was created!");
 
-        if (new File(dataFolder, "locales\\default.yml").exists())
+        if (!new File(dataFolder, "locales\\default.yml").exists())
             LD.getInstance().saveResource("locales\\default.yml", false);
 
         loadLocale(config);
@@ -88,6 +91,7 @@ public class ConfigUtils {
 
         // Надписи, которые сразу можно конвертировать в Component
         String[] array = new String[] {
+                "menu.name",
                 "menu.kit_start_1.name",
                 "menu.kit_start_2.name",
                 "menu.kit_start_3.name",
@@ -115,6 +119,7 @@ public class ConfigUtils {
         // Надписи, которые нужно оставить в виде строк
         array = new String[] {
                 "command.use_only_player",
+                "command.wait_send_request",
                 "command.you_send_request",
                 "command.player_send_request",
                 "command.you_access_request",
@@ -132,10 +137,12 @@ public class ConfigUtils {
     }
 
     private static String checkString(String text, String path, String locale){
-        if (text == null)
+        if (text == null){
+            TextUtils.sendWarningMessage("Title \"" + path + "\" in \"" + locale + "\" not exists! An empty string will be given");
             return "";
+        }
         if (text.contains("&") || text.contains("§")){
-            TextUtils.sendWarningMessage("Title \"" + path + "\" in \"" + locale + "\" must not have char \"&\" or \"§\"!\n " + text);
+            TextUtils.sendWarningMessage("Title \"" + path + "\" in \"" + locale + "\" must not have char \"&\" or \"§\"! An empty string will be given");
             return "";
         }
         return text;

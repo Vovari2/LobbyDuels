@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -30,6 +31,7 @@ public class InventoryUtils {
         itemMeta = kitTwo.getItemMeta();
         itemMeta.displayName(LD.getLocaleStrings().get("menu.kit_start_2.name"));
         itemMeta.lore(LD.getLocaleLists().get("menu.kit_start_2.lore"));
+        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         kitTwo.setItemMeta(itemMeta);
         kitTwo.setAmount(1);
 
@@ -37,10 +39,11 @@ public class InventoryUtils {
         itemMeta = kitThree.getItemMeta();
         itemMeta.displayName(LD.getLocaleStrings().get("menu.kit_start_3.name"));
         itemMeta.lore(LD.getLocaleLists().get("menu.kit_start_3.lore"));
+        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         kitThree.setItemMeta(itemMeta);
         kitThree.setAmount(1);
 
-        emptySlot = new ItemStack(Material.BLACK_STAINED_GLASS);
+        emptySlot = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         itemMeta = emptySlot.getItemMeta();
         itemMeta.displayName(LD.getLocaleStrings().get("menu.background.name"));
         itemMeta.lore(LD.getLocaleLists().get("menu.background.lore"));
@@ -49,11 +52,10 @@ public class InventoryUtils {
     }
 
     public static Inventory openVotesInventory(Player player){
-        defaultVotes = Bukkit.createInventory(player, 9, Component.text("Дуэль начнётся через 10"));
+        defaultVotes = Bukkit.createInventory(player, 9, LD.getLocaleStrings().get("menu.name"));
         defaultVotes.setItem(2, kitOne);
         defaultVotes.setItem(4, kitTwo);
         defaultVotes.setItem(6, kitThree);
-        TextUtils.sendWarningMessage(defaultVotes.getItem(0).toString());
         for (int i = 0; i < 9; i++)
             if (defaultVotes.getItem(i) == null)
                 defaultVotes.setItem(i, emptySlot);

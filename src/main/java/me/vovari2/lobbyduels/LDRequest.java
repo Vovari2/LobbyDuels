@@ -6,7 +6,8 @@ import java.util.Objects;
 
 public class LDRequest {
     // Класс для хранения информации о запросах игроков на дуэли
-    public int second;
+    public int periodSecond;
+    public boolean isCancel;
 
     private final Player playerTo;
     private final Player playerFrom;
@@ -16,7 +17,7 @@ public class LDRequest {
     }
 
     LDRequest(Player playerTo, Player playerFrom){
-        this.second = 0;
+        this.periodSecond = LDTaskSeconds.seconds;
         this.playerTo = playerTo;
         this.playerFrom = playerFrom;
     }

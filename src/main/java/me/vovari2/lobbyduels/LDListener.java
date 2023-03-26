@@ -17,19 +17,32 @@ public class LDListener implements Listener {
     // Вызов другого игрока на дуэль
     @EventHandler
     public void entityDamageByEntity(EntityDamageByEntityEvent event){
-        if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player))
+        if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player) || LDTaskSeconds.offClicks.contains(event.getDamager().getName()))
             return;
 
         Player player = (Player) event.getEntity(),
                 damager = (Player) event.getDamager();
+        String playerName = player.getName(),
+                damagerName = damager.getName();
 
-        if (plugin.hasRequest(player.getName(), damager.getName()))
+        LDTaskSeconds.offClicks.add(damagerName);
+
+        LDRequest request = plugin.getRequest(playerName, damagerName);
+        if (request != null) {
+            if (request.isCancel)
+                TextUtils.sendPlayerMessage(damager, LD.getLocaleTexts().get("command.wait_send_request").replaceAll("%time%", String.valueOf(getTimeToNextRequest(request.periodSecond))));
             return;
+        }
 
-        String playerName = player.getName(), damagerName = damager.getName();
-        TextUtils.sendPlayerMessage(damager, LD.getLocaleTexts().get("command.you_send_request").replaceAll("%player", playerName));
-        TextUtils.sendPlayerMessage(player, LD.getLocaleTexts().get("command.player_send_request").replaceAll("%player", damagerName));
+        TextUtils.sendPlayerMessage(damager, LD.getLocaleTexts().get("command.you_send_request").replaceAll("%player%", playerName));
+        TextUtils.sendPlayerMessage(player, LD.getLocaleTexts().get("command.player_send_request").replaceAll("%player%", damagerName));
         plugin.requests.add(new LDRequest(player, damager));
+    }
+    private int getTimeToNextRequest(int time) {
+        int timer = LDTaskSeconds.seconds;
+        if (time - timer > 0)
+            return time - timer;
+        else return time + plugin.periodRequests - timer;
     }
 
     @EventHandler
@@ -46,6 +59,5 @@ public class LDListener implements Listener {
         if (duel.isGo)
             return;
 
-        player.openInventory(duel.inventoryView);
     }
 }

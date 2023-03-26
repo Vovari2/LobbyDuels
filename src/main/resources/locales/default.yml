@@ -7,6 +7,9 @@
 
 # Имена и лор предметов меню голосования за набор
 menu:
+  # Имя ивентаря с менюшкой выбора набора
+  name: "Выбор набора"
+
   # Предмет первого набора
   kit_start_1:
     name: "<!italic><gradient:#FBBF89:#FD7B31>Кулачные бои</gradient>"
@@ -43,31 +46,34 @@ command:
   # Ошибка, когда у игрока нет брошенных ему вызовов
   have_not_request_for_you: "<bold><red>[!] <!bold><gray>Вы не имеете брошенных вам вызовов!"
 
+  # Ошибка, когда пользователь слишком часто вызывает на дуэль
+  wait_send_request: "<bold><red>[!] <!bold><gray>Вы сможете вызвать на дуэль только через %time% секунд!"
+
   # Ошибка, если расстояние между игроками менее 5 блоков
   distance_too_big: "<bold><red>[!] <!bold><gray>Расстояние между вами и вашим противником, должно быть менее 5 блоков!"
 
 
   # Сообщение, когда игрок отправил вызов на дуэль
-  you_send_request: "<gradient:#00D1FF:#0038FF>Вы вызвали игрока <gray>%player%</gray> на дуэль!</gradient> <hover:show_text:'<green>Принять вызов на дуэль'><click:run_command:/ld accept %player%><bold><green>[✓]</click></hover>"
+  you_send_request: "<gradient:#00D1FF:#0085FF>Вы вызвали игрока <gray>%player%</gray> на дуэль!</gradient> <hover:show_text:'<red>Отказаться от вызова на дуэль'><click:run_command:/ld cancel %player%><bold><red>[×]</click></hover>"
 
   # Сообщение, когда игроку отправили вызов на дуэль
-  player_send_request: "Игрок <gray>%player%</gray> вызвал вас на дуэль</gradient> <hover:show_text:'<green>Принять вызов на дуэль'><click:run_command:/ld accept %player%><bold><green>[✓]</click></hover> <hover:show_text:'<red>Отказаться от вызова на дуэль'><click:run_command:/ld cancel %player%><bold><red>[×]</click></hover>"
+  player_send_request: "<gradient:#00D1FF:#0085FF>Игрок <gray>%player%</gray> вызвал вас на дуэль</gradient> <hover:show_text:'<green>Принять вызов на дуэль'><click:run_command:/ld accept %player%><bold><green>[✓]</click></hover> <hover:show_text:'<red>Отказаться от вызова на дуэль'><click:run_command:/ld cancel %player%><bold><red>[×]</click></hover>"
 
 
   # Сообщение, когда игрок принял вызов
-  you_access_request: "<gradient:#00D1FF:#0038FF>Вы приняли вызов игрока <gray>%player%</gray> </gradient>"
+  you_access_request: "<gradient:#00D1FF:#0085FF>Вы приняли вызов игрока <gray>%player%</gray> </gradient>"
 
   # Сообщение, когда другой игрок принял ваш вызов
-  player_access_request: "<gradient:#00D1FF:#0038FF>Игрок <gray>%player%</gray> принял ваш вызов на дуэль </gradient>"
+  player_access_request: "<gradient:#00D1FF:#0085FF>Игрок <gray>%player%</gray> принял ваш вызов на дуэль </gradient>"
 
   # Сообщение, когда игрок отклонил свой вызов другому игроку
-  you_cancel_your_request: "<gradient:#00D1FF:#0038FF>Вы отклонили вызов, брошенный игроку <gray>%player%</gray> </gradient>"
+  you_cancel_your_request: "<gradient:#00D1FF:#0085FF>Вы отклонили вызов, брошенный игроку <gray>%player%</gray> </gradient>"
 
-  # Сообщение, когда игрок отклонил вызов другого игрока
-  you_cancel_player_request: "<gradient:#00D1FF:#0038FF>Вы отклонил вызов игрока <gray>%player%</gray> </gradient>"
+
 
   # Сообщение, когда другой игрок отклонил ваш вызов
-  player_cancel_your_request: "<gradient:#00D1FF:#0038FF>Игрок <gray>%player%</gray> отклонил ваш вызов на дуэль </gradient>"
-
+  player_cancel_your_request: "<gradient:#00D1FF:#0085FF>Игрок <gray>%player%</gray> отклонил ваш вызов на дуэль </gradient>"
+  # Сообщение, когда игрок отклонил вызов другого игрока
+  you_cancel_player_request: "<gradient:#00D1FF:#0085FF>Вы отклонил вызов игрока <gray>%player%</gray> </gradient>"
   # Сообщение, когда другой игрок отклонил свой вызов вам
-  player_cancel_player_request: "<gradient:#00D1FF:#0038FF>Игрок <gray>%player%</gray> отклонил свой вызов на дуэль </gradient>"
+  player_cancel_player_request: "<gradient:#00D1FF:#0085FF>Игрок <gray>%player%</gray> отклонил свой вызов на дуэль </gradient>"
