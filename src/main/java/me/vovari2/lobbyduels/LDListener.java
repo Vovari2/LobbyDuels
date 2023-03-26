@@ -1,10 +1,11 @@
 package me.vovari2.lobbyduels;
 
+import me.vovari2.lobbyduels.utils.TextUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
 public class LDListener implements Listener {
 
@@ -13,6 +14,7 @@ public class LDListener implements Listener {
         this.plugin = plugin;
     }
 
+    // Вызов другого игрока на дуэль
     @EventHandler
     public void entityDamageByEntity(EntityDamageByEntityEvent event){
         if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player))
@@ -24,9 +26,26 @@ public class LDListener implements Listener {
         if (plugin.hasRequest(player.getName(), damager.getName()))
             return;
 
-        String damagerName = damager.getName();
-
-        TextUtils.sendPlayerChatMessage(player, TextUtils.getGradient() + "Игрок <gray>" + damagerName + "</gray> вызвал вас на дуэль</gradient> " + TextUtils.getButtonAccept(damagerName) + " " + TextUtils.getButtonRefuse(damagerName));
+        String playerName = player.getName(), damagerName = damager.getName();
+        TextUtils.sendPlayerMessage(damager, LD.getLocaleTexts().get("command.you_send_request").replaceAll("%player", playerName));
+        TextUtils.sendPlayerMessage(player, LD.getLocaleTexts().get("command.player_send_request").replaceAll("%player", damagerName));
         plugin.requests.add(new LDRequest(player, damager));
+    }
+
+    @EventHandler
+    public void playerInventoryClose(InventoryCloseEvent event){
+        if (!(event.getPlayer() instanceof Player))
+            return;
+
+        Player player = (Player) event.getPlayer();
+        LDDuel duel = plugin.getDuel(player.getName());
+
+        if (duel == null)
+            return;
+
+        if (duel.isGo)
+            return;
+
+        player.openInventory(duel.inventoryView);
     }
 }

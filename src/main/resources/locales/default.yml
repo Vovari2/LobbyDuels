@@ -1,0 +1,73 @@
+# Для указания цветов, других функции использовалась API net.kyori.adventure, ссылка: https://docs.advntr.dev/minimessage/format.html
+# ! Это файл с надписями по умолчанию, его нельзя изменять !
+#     Нужно создать новый файл в папке "locales", заполнив параметры точно также, имя которого указав в параметре "locale" фалйа "config.yml"
+# Пример файла:       locales\ru.yml
+# Пример параметра:   locale: ru
+
+
+# Имена и лор предметов меню голосования за набор
+menu:
+  # Предмет первого набора
+  kit_start_1:
+    name: "<!italic><gradient:#FBBF89:#FD7B31>Кулачные бои</gradient>"
+    lore:
+
+  # Предмет второго набора
+  kit_start_2:
+    name: "<!italic><gradient:#A9E5FF:#2FA8FF>Стандартный набор</gradient>"
+    lore:
+
+  # Предмет третьего набора
+  kit_start_3:
+    name: "<!italic><gradient:#8F00FF:#FF0099>Топовый набор</gradient>"
+    lore:
+
+  # Предмет черной стекляной панели (фона)
+  background:
+    name: ""
+    lore:
+
+
+
+command:
+  # Высвечивается надпись, если команда вызвана из консоли
+  use_only_player: "<bold><red>[!] <!bold><gray>Эту команду может использовать только игрок!"
+
+
+  # Выводится, если команда введена неверно
+  command_incorrectly: "<bold><red>[!] <!bold><gray>Команда введена неверно! (/ld help)"
+
+  # Ошибка, когда у игрока нет брошенных ему вызовов от определенного игрока
+  have_not_request_from_player: "<bold><red>[!] <!bold><gray>Вы не имеете брошенных вам вызовов от этого игрока!"
+
+  # Ошибка, когда у игрока нет брошенных ему вызовов
+  have_not_request_for_you: "<bold><red>[!] <!bold><gray>Вы не имеете брошенных вам вызовов!"
+
+  # Ошибка, если расстояние между игроками менее 5 блоков
+  distance_too_big: "<bold><red>[!] <!bold><gray>Расстояние между вами и вашим противником, должно быть менее 5 блоков!"
+
+
+  # Сообщение, когда игрок отправил вызов на дуэль
+  you_send_request: "<gradient:#00D1FF:#0038FF>Вы вызвали игрока <gray>%player%</gray> на дуэль!</gradient> <hover:show_text:'<green>Принять вызов на дуэль'><click:run_command:/ld accept %player%><bold><green>[✓]</click></hover>"
+
+  # Сообщение, когда игроку отправили вызов на дуэль
+  player_send_request: "Игрок <gray>%player%</gray> вызвал вас на дуэль</gradient> <hover:show_text:'<green>Принять вызов на дуэль'><click:run_command:/ld accept %player%><bold><green>[✓]</click></hover> <hover:show_text:'<red>Отказаться от вызова на дуэль'><click:run_command:/ld cancel %player%><bold><red>[×]</click></hover>"
+
+
+  # Сообщение, когда игрок принял вызов
+  you_access_request: "<gradient:#00D1FF:#0038FF>Вы приняли вызов игрока <gray>%player%</gray> </gradient>"
+
+  # Сообщение, когда другой игрок принял ваш вызов
+  player_access_request: "<gradient:#00D1FF:#0038FF>Игрок <gray>%player%</gray> принял ваш вызов на дуэль </gradient>"
+
+  # Сообщение, когда игрок отклонил свой вызов другому игроку
+  you_cancel_your_request: "<gradient:#00D1FF:#0038FF>Вы отклонили вызов, брошенный игроку <gray>%player%</gray> </gradient>"
+
+  # Сообщение, когда игрок отклонил вызов другого игрока
+  you_cancel_player_request: "<gradient:#00D1FF:#0038FF>Вы отклонил вызов игрока <gray>%player%</gray> </gradient>"
+
+  # Сообщение, когда другой игрок отклонил ваш вызов
+  player_cancel_your_request: "<gradient:#00D1FF:#0038FF>Игрок <gray>%player%</gray> отклонил ваш вызов на дуэль </gradient>"
+
+  # Сообщение, когда другой игрок отклонил свой вызов вам
+  player_cancel_player_request: "<gradient:#00D1FF:#0038FF>Игрок <gray>%player%</gray> отклонил свой вызов на дуэль </gradient>"

@@ -1,25 +1,28 @@
 package me.vovari2.lobbyduels;
 
+import me.vovari2.lobbyduels.utils.ConfigUtils;
+import me.vovari2.lobbyduels.utils.TextUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.World;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public final class LD extends JavaPlugin {
 
     private static LD plugin;
-    public static LD getInstance(){
-        return plugin;
-    }
+    private HashMap<String, Component> localeStrings;
+    private HashMap<String, List<Component>> localeLists;
+    private HashMap<String, String> localeTexts;
 
     public World world;
-    public int delayRequests;
+    public int periodRequests;
 
     public List<LDRequest> requests;
+    public List<LDDuel> duels;
 
     public LDTaskSeconds taskSeconds;
 
@@ -27,22 +30,19 @@ public final class LD extends JavaPlugin {
     public void onEnable() {
         plugin = this;
 
+        localeStrings = new HashMap<>();
+        localeLists = new HashMap<>();
+        localeTexts = new HashMap<>();
+
+        try{
+            ConfigUtils.Initialization();
+        } catch(LDException error){
+            TextUtils.sendWarningMessage(error.getMessage());
+            plugin.getServer().getPluginManager().disablePlugin(plugin);
+        }
+
         requests = new ArrayList<>();
-
-        // Загрузка конфигов
-        File file = new File(getDataFolder(), "config.yml");
-        if (!file.exists())
-            saveResource("config.yml", false);
-
-        try{ getConfig().load(file); }
-        catch(InvalidConfigurationException | IOException error){ TextUtils.sendConsoleWarningMessage("Не удалось загрузить файл \"config.yml\": \n" + error.getMessage()); }
-
-        String worldName = getConfig().getString("world");
-        if (worldName == null)
-            TextUtils.sendConsoleWarningMessage("Мир в конфиге указан не верно!");
-        else world = getServer().getWorld(worldName);
-
-        delayRequests = getConfig().getInt("delay_request");
+        duels = new ArrayList<>();
 
         getServer().getPluginManager().registerEvents(new LDListener(plugin), plugin);
         getCommand("lobbyduels").setExecutor(new LDCommands(plugin));
@@ -57,10 +57,16 @@ public final class LD extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    public LDRequest getRequest(String playerTo){
-        for (LDRequest request : requests)
-            if (playerTo.equals(request.getPlayerTo().getName()))
-                return request;
+    public LDRequest getRequest(String player, boolean isToPlayer){
+        if (isToPlayer){
+            for (LDRequest request : requests)
+                if (player.equals(request.getPlayerTo().getName()))
+                    return request;
+        }
+        else
+            for (LDRequest request : requests)
+                    if (player.equals(request.getPlayerFrom().getName()) || player.equals(request.getPlayerTo().getName()))
+                        return request;
         return null;
     }
     public LDRequest getRequest(String playerTo, String playerFrom){
@@ -69,7 +75,6 @@ public final class LD extends JavaPlugin {
                 return request;
         return null;
     }
-
     public boolean hasRequest(String playerTo, String playerFrom) {
         if (requests.isEmpty())
             return false;
@@ -78,5 +83,28 @@ public final class LD extends JavaPlugin {
             if (request.equals(playerTo, playerFrom))
                 return true;
         return false;
+    }
+
+    public LDDuel getDuel(String player){
+        for (LDDuel duel : LD.getInstance().duels)
+            if (duel.getPlayerTo().getName().equals(player) || duel.getPlayerFrom().getName().equals(player))
+                return duel;
+        return null;
+    }
+
+    public static LD getInstance(){
+        return plugin;
+    }
+    public static Logger getServerLogger(){
+        return plugin.getServer().getLogger();
+    }
+    public static HashMap<String, Component> getLocaleStrings(){
+        return plugin.localeStrings;
+    }
+    public static HashMap<String, List<Component>> getLocaleLists(){
+        return plugin.localeLists;
+    }
+    public static HashMap<String, String> getLocaleTexts(){
+        return plugin.localeTexts;
     }
 }

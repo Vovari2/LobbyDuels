@@ -11,13 +11,6 @@ public class LDRequest {
     private final Player playerTo;
     private final Player playerFrom;
 
-    public Player getPlayerTo() {
-        return playerTo;
-    }
-    public Player getPlayerFrom() {
-        return playerFrom;
-    }
-
     public boolean equals(String playerTo, String playerFrom){
         return Objects.equals(this.playerFrom.getName(), playerFrom) && Objects.equals(this.playerTo.getName(), playerTo);
     }
@@ -26,6 +19,13 @@ public class LDRequest {
         this.second = 0;
         this.playerTo = playerTo;
         this.playerFrom = playerFrom;
+    }
+
+    public Player getPlayerTo() {
+        return playerTo;
+    }
+    public Player getPlayerFrom() {
+        return playerFrom;
     }
 
 }

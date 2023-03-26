@@ -1,5 +1,6 @@
 package me.vovari2.lobbyduels;
 
+import me.vovari2.lobbyduels.utils.TextUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -7,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class LDCommands implements CommandExecutor {
-    private LD plugin;
+    private final LD plugin;
     LDCommands(LD plugin){
         this.plugin = plugin;
     }
@@ -15,13 +16,13 @@ public class LDCommands implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player)){
-            TextUtils.sendConsoleWarningMessage("Эту команду может использовать только игрок!");
+            TextUtils.sendSenderMessage(sender, LD.getLocaleTexts().get("command.use_only_player"));
             return true;
         }
 
         Player player = (Player) sender;
         if (args.length < 1){
-            TextUtils.sendPlayerErrorMessage(player, "Команда введена неверно!");
+            player.sendMessage(LD.getLocaleStrings().get("command.command_incorrectly"));
             return true;
         }
 
@@ -30,20 +31,30 @@ public class LDCommands implements CommandExecutor {
             if (args.length == 2){
                 request = plugin.getRequest(player.getName(), args[1]);
                 if (request == null){
-                    TextUtils.sendPlayerErrorMessage(player, "Вы не имеете брошенных вам вызовов от этого игрока!");
+                    player.sendMessage(LD.getLocaleStrings().get("command.have_not_request_from_player"));
                     return true;
                 }
             }
             else {
-                request = plugin.getRequest(player.getName());
+                request = plugin.getRequest(player.getName(), true);
                 if (request == null){
-                    TextUtils.sendPlayerErrorMessage(player, "Вы не имеете брошенных вам вызовов!");
+                    player.sendMessage(LD.getLocaleStrings().get("command.have_not_request_for_you"));
                     return true;
                 }
             }
 
-            TextUtils.sendPlayerChatMessage(player, TextUtils.getGradient() + "Вы приняли вызов игрока <gray>" + request.getPlayerFrom().getName() + "</gray> </gradient>");
-            TextUtils.sendPlayerChatMessage(request.getPlayerFrom(), TextUtils.getGradient() + "Игрок <gray>" + request.getPlayerTo().getName() + "</gray> принял ваш вызов на дуэль </gradient>");
+            Player playerTo = request.getPlayerTo(),
+                    playerFrom = request.getPlayerFrom();
+
+            if (playerFrom.getLocation().getWorld() != plugin.world || playerTo.getLocation().getWorld() != plugin.world || playerTo.getLocation().distance(playerFrom.getLocation()) > 5 ){
+                player.sendMessage(LD.getLocaleStrings().get("command.distance_too_big"));
+                return true;
+            }
+
+            LDDuel.startDuel(request);
+
+            TextUtils.sendPlayerMessage(playerTo, LD.getLocaleTexts().get("command.you_access_request").replaceAll("%player%", playerFrom.getName()));
+            TextUtils.sendPlayerMessage(playerFrom, LD.getLocaleTexts().get("command.player_access_request").replaceAll("%player%", playerTo.getName()));
             return true;
         }
         if (args[0].equals("cancel")){
@@ -51,24 +62,34 @@ public class LDCommands implements CommandExecutor {
             if (args.length == 2){
                 request = plugin.getRequest(player.getName(), args[1]);
                 if (request == null){
-                    TextUtils.sendPlayerErrorMessage(player, "Вы не имеете брошенных вам вызовов от этого игрока!");
+                    player.sendMessage(LD.getLocaleStrings().get("command.have_not_request_from_player"));
                     return true;
                 }
             }
             else {
-                request = plugin.getRequest(player.getName());
+                request = plugin.getRequest(player.getName(), false);
                 if (request == null){
-                    TextUtils.sendPlayerErrorMessage(player, "Вы не имеете брошенных вам вызовов!");
+                    player.sendMessage(LD.getLocaleStrings().get("command.have_not_request_for_you"));
                     return true;
                 }
             }
 
+            Player playerTo = request.getPlayerTo(),
+                    playerFrom = request.getPlayerFrom();
+
             plugin.requests.remove(request);
-            TextUtils.sendPlayerChatMessage(player, TextUtils.getGradient() + "Вы отклонил вызов игрока <gray>" + request.getPlayerFrom().getName() + "</gray> </gradient>");
-            TextUtils.sendPlayerChatMessage(request.getPlayerFrom(), TextUtils.getGradient() + "Игрок <gray>" + request.getPlayerTo().getName() + "</gray> отклонил ваш вызов на дуэль </gradient>");
+
+            if (player == playerTo){
+                TextUtils.sendPlayerMessage(playerTo, LD.getLocaleTexts().get("command.you_cancel_player_request").replaceAll("%player%", playerFrom.getName()));
+                TextUtils.sendPlayerMessage(playerFrom,  LD.getLocaleTexts().get("command.player_cancel_your_request").replaceAll("%player%", playerTo.getName()));
+            }
+            else{
+                TextUtils.sendPlayerMessage(playerTo, LD.getLocaleTexts().get("command.player_cancel_player_request").replaceAll("%player%", playerFrom.getName()));
+                TextUtils.sendPlayerMessage(playerFrom,  LD.getLocaleTexts().get("command.you_cancel_your_request").replaceAll("%player%", playerTo.getName()));
+            }
             return true;
         }
-        TextUtils.sendPlayerErrorMessage(player, "Команда введена неверно!");
+        player.sendMessage(LD.getLocaleStrings().get("command.command_incorrectly"));
 
         return true;
     }
