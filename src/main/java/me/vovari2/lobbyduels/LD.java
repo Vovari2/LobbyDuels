@@ -1,5 +1,8 @@
 package me.vovari2.lobbyduels;
 
+import me.vovari2.lobbyduels.objects.LDDuel;
+import me.vovari2.lobbyduels.objects.LDException;
+import me.vovari2.lobbyduels.objects.LDRequest;
 import me.vovari2.lobbyduels.utils.ConfigUtils;
 import me.vovari2.lobbyduels.utils.InventoryUtils;
 import me.vovari2.lobbyduels.utils.TextUtils;
@@ -15,7 +18,10 @@ public final class LD extends JavaPlugin {
     private static LD plugin;
 
     public World world;
-    public int periodRequests;
+
+    public int durationRequest;
+    public int durationBetweenRequest;
+    public int durationPolling;
 
     public List<LDRequest> requests;
     public List<LDDuel> duels;

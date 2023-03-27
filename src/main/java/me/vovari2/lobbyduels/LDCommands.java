@@ -1,5 +1,9 @@
 package me.vovari2.lobbyduels;
 
+import me.vovari2.lobbyduels.objects.LDDuel;
+import me.vovari2.lobbyduels.objects.LDRequest;
+import me.vovari2.lobbyduels.objects.LDWaitRequest;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -42,12 +46,6 @@ public class LDCommands implements CommandExecutor {
                 }
             }
 
-            // Проверка, отменен ли вызов на дуэль
-            if (request.isCancel) {
-                player.sendMessage(LDLocale.getLocaleComponent("command.have_not_request_for_you"));
-                return true;
-            }
-
             Player playerTo = request.getPlayerTo(),
                     playerFrom = request.getPlayerFrom();
 
@@ -72,6 +70,9 @@ public class LDCommands implements CommandExecutor {
             // Сообщение, что вызов на дуэль принят
             playerTo.sendMessage(LDLocale.replacePlaceHolders("command.you_access_request", "%player%", playerFrom.getName()));
             playerFrom.sendMessage(LDLocale.replacePlaceHolders("command.player_access_request", "%player%", playerTo.getName()));
+
+            playerTo.sendMessage(MiniMessage.miniMessage().deserialize("<newline>").append(LDLocale.replacePlaceHolders("menu.duel_start_in_time", "%time%", String.valueOf(LD.getInstance().durationPolling))));
+            playerFrom.sendMessage(MiniMessage.miniMessage().deserialize("<newline>").append(LDLocale.replacePlaceHolders("menu.duel_start_in_time", "%time%", String.valueOf(LD.getInstance().durationPolling))));
             return true;
         }
         if (args[0].equals("cancel")){
@@ -91,26 +92,24 @@ public class LDCommands implements CommandExecutor {
                 }
             }
 
-            // Проверка, отменен ли вызов на дуэль
-            if (request.isCancel){
-                player.sendMessage(LDLocale.getLocaleComponent("command.have_not_request_for_you"));
-                return true;
-            }
-
             Player playerTo = request.getPlayerTo(),
                     playerFrom = request.getPlayerFrom();
 
-            request.periodSecond = LDTaskSeconds.seconds;
-            request.isCancel = true;
+            String namePlayerTo = playerTo.getName(),
+                    namePlayerFrom = playerFrom.getName();
+
+
+            LDTaskSeconds.waitRequest.add(new LDWaitRequest(namePlayerTo, namePlayerFrom));
+            LD.getInstance().requests.remove(request);
 
             // Сообщение, что вызов на дуэль отклонен
             if (player == playerTo){
-                playerTo.sendMessage(LDLocale.replacePlaceHolders("command.you_cancel_player_request", "%player%", playerFrom.getName()));
-                playerFrom.sendMessage(LDLocale.replacePlaceHolders("command.player_cancel_your_request", "%player%", playerTo.getName()));
+                playerTo.sendMessage(LDLocale.replacePlaceHolders("command.you_cancel_player_request", "%player%", namePlayerFrom));
+                playerFrom.sendMessage(LDLocale.replacePlaceHolders("command.player_cancel_your_request", "%player%", namePlayerTo));
             }
             else{
-                playerTo.sendMessage(LDLocale.replacePlaceHolders("command.player_cancel_player_request", "%player%", playerFrom.getName()));
-                playerFrom.sendMessage(LDLocale.replacePlaceHolders("command.you_cancel_your_request", "%player%", playerTo.getName()));
+                playerTo.sendMessage(LDLocale.replacePlaceHolders("command.player_cancel_player_request", "%player%", namePlayerFrom));
+                playerFrom.sendMessage(LDLocale.replacePlaceHolders("command.you_cancel_your_request", "%player%", namePlayerTo));
             }
             return true;
         }
@@ -133,7 +132,7 @@ public class LDCommands implements CommandExecutor {
                 return true;
             }
 
-            player.openInventory(duel.inventory);
+            player.openInventory(duel.menuPolling);
             return true;
         }
         player.sendMessage(LDLocale.getLocaleComponent("command.command_incorrectly"));

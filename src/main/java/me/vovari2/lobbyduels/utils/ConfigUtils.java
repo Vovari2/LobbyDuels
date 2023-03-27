@@ -1,7 +1,7 @@
 package me.vovari2.lobbyduels.utils;
 
 import me.vovari2.lobbyduels.LD;
-import me.vovari2.lobbyduels.LDException;
+import me.vovari2.lobbyduels.objects.LDException;
 import me.vovari2.lobbyduels.LDLocale;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -45,6 +45,7 @@ public class ConfigUtils {
         loadLocale(config);
     }
 
+
     // Загрузка параметров основного конфига
     private static void loadSettings(FileConfiguration config) throws LDException {
         // Получение мира из конфига
@@ -58,13 +59,15 @@ public class ConfigUtils {
 
         LD.getInstance().world = world;
 
-
-        // Получение периода между вызовами
-        int periodRequests = config.getInt("period_requests");
-        if (periodRequests < 1)
-            throw new LDException("Value \"period_requests\" must be greater than 0!");
-
-        LD.getInstance().periodRequests = config.getInt("period_requests");
+        LD.getInstance().durationRequest = checkDuration(config, "duration_request");
+        LD.getInstance().durationBetweenRequest = checkDuration(config, "duration_between_request");
+        LD.getInstance().durationPolling = checkDuration(config, "duration_polling");
+    }
+    private static int checkDuration(FileConfiguration config, String key) throws LDException{
+        int value = config.getInt(key);
+        if (value < 1)
+            throw new LDException("Value \"" + key + "\" must be greater than 0!");
+        return value;
     }
 
 
@@ -92,8 +95,8 @@ public class ConfigUtils {
 
         // Надписи, которые сразу можно конвертировать в Component
         String[] array = new String[] {
-                "menu.name",
                 "command.use_only_player",
+                "menu.name",
                 "menu.kit_start_1.name",
                 "menu.kit_start_2.name",
                 "menu.kit_start_3.name",
@@ -105,6 +108,7 @@ public class ConfigUtils {
                 "command.you_already_have_duel",
                 "command.player_already_have_duel",
                 "command.you_are_not_in_duel",
+                "menu.duel_starting",
                 "menu.close_menu_and_voted",
                 "menu.close_menu_and_not_voted"
         };
@@ -114,6 +118,7 @@ public class ConfigUtils {
 
         // Надписи, которые нужно оставить в виде строк
         array = new String[] {
+                "menu.duel_start_in_time",
                 "command.wait_send_request",
                 "command.you_send_request",
                 "command.player_send_request",
@@ -155,7 +160,6 @@ public class ConfigUtils {
 
         TextUtils.sendInfoMessage("Locale file \"" + locale + ".yml\" was loaded!");
     }
-
     private static String checkString(String text, String path, String locale){
         if (text == null){
             TextUtils.sendWarningMessage("Title \"" + path + "\" in \"" + locale + "\" not exists! An empty string will be given");

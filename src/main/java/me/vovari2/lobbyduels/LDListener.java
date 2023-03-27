@@ -1,5 +1,8 @@
 package me.vovari2.lobbyduels;
 
+import me.vovari2.lobbyduels.objects.LDDuel;
+import me.vovari2.lobbyduels.objects.LDRequest;
+import me.vovari2.lobbyduels.objects.LDWaitRequest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +25,7 @@ public class LDListener implements Listener {
         if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player) || LDTaskSeconds.offClicks.contains(event.getDamager().getName()))
             return;
 
+
         Player player = (Player) event.getEntity(),
                 damager = (Player) event.getDamager();
         String playerName = player.getName(),
@@ -29,31 +33,25 @@ public class LDListener implements Listener {
 
         LDTaskSeconds.offClicks.add(damagerName);
 
-        // Проверка, вызова не существует или вызов отменен
-        LDRequest request = plugin.getRequest(playerName, damagerName);
-        if (request != null) {
-            if (request.isCancel)
-                damager.sendMessage(LDLocale.replacePlaceHolders("command.wait_send_request", "%time%", String.valueOf(getTimeToNextRequest(request.periodSecond))));
+        LDWaitRequest waitRequest = LDTaskSeconds.getWaitRequest(playerName, damagerName);
+        if (waitRequest != null){
+            damager.sendMessage(LDLocale.replacePlaceHolders("command.wait_send_request", "%time%", String.valueOf(LDTaskSeconds.getSecondsToTime(waitRequest.getUnitSecond()))));
             return;
         }
+        // Проверка, вызова не существует
+        LDRequest request = plugin.getRequest(playerName, damagerName);
+        if (request != null)
+            return;
 
         // Проверка, находится ли один из игроков в дуэле
         if (plugin.getDuel(playerName) != null || plugin.getDuel(damagerName) != null)
             return;
 
         // Сообщение о вызове на дуэль
-
-
         damager.sendMessage(LDLocale.replacePlaceHolders("command.you_send_request", "%player%", playerName));
         player.sendMessage(LDLocale.replacePlaceHolders("command.player_send_request", "%player%", damagerName));
         plugin.requests.add(new LDRequest(player, damager));
     }
-    private int getTimeToNextRequest(int time) {
-        int timer = LDTaskSeconds.seconds;
-        if (time - timer > 0)
-            return time - timer;
-        else return time + plugin.periodRequests - timer;
-    } // Время, сколько осталось до возможности следующего вызова на дуэль
 
     @EventHandler
     public void playerQuit(PlayerQuitEvent event){
@@ -92,9 +90,17 @@ public class LDListener implements Listener {
         if (duel == null)
             return;
 
-        if (duel.getVote(player) == 0)
-            player.sendMessage(LDLocale.getLocaleComponent("menu.close_menu_and_not_voted"));
-        else player.sendMessage(LDLocale.getLocaleComponent("menu.close_menu_and4_voted"));
+        if (duel.isGo)
+            return;
+
+        if (duel.getAlreadyVoted(player))
+            return;
+
+        if (duel.getVote(player) != 0){
+            duel.setAlreadyVoted(player, true);
+            player.sendMessage(LDLocale.getLocaleComponent("menu.close_menu_and_voted"));
+        }
+        else player.sendMessage(LDLocale.getLocaleComponent("menu.close_menu_and_not_voted"));
     }
 
     // Закрытие инвентаря меню выбора набора

@@ -4,6 +4,8 @@
 # Пример файла: locales\ru.yml
 # Пример параметра: locale: ru
 
+# Указывать плейсхолдеры (%player%, %time%, %votes%) можно только в тех строках текста, где они есть в файле "default.yml". В других строках их нельзя указывать!!
+
 
 menu:
   # Имя инвентаря с менюшкой выбора набора
@@ -39,10 +41,15 @@ menu:
     name: ""
     lore:
 
-  # Сообщение, когда игрок закрывает меню выбора набора, при этом не проголосовав ни за что
-  close_menu_and_voted: "<gradient:#00D1FF:#0085FF>Вы не проголосовали, если захотите проголосовать </gradient><hover:show_text:'<gray> ЛКМ - Открыть меню выбора набора'><click:run_command:/ld vote><bold><green>[Проголосовать]</click></hover>"
+  # Сообщение о том, что дуэль начнётся через N секунд
+  duel_start_in_time: "<gradient:#00D1FF:#0085FF>Дуэль начнётся через <gray>%time%</gray> сек</gradient>"
+  # Сообщение о том, что дуэль начинается
+  duel_starting: "<gradient:#00D1FF:#0085FF>Дуэль начинается!</gradient>"
+
   # Сообщение, когда игрок закрывает меню выбора набора, при этом проголосовав
-  close_menu_and_not_voted: "<gradient:#00D1FF:#0085FF>Вы проголосовали, если захотите посмотреть результаты </gradient><hover:show_text:'<gray> ЛКМ - Открыть меню выбора набора'><click:run_command:/ld vote><bold><green>[Посмотреть]</click></hover>"
+  close_menu_and_voted: "<hover:show_text:'<gray> ЛКМ - Открыть меню выбора набора'><click:run_command:/ld vote><green>Нажмите</click></hover><gradient:#00D1FF:#0085FF>, если захотите открыть меню выбора </gradient>"
+  # Сообщение, когда игрок закрывает меню выбора набора, при этом не проголосовав ни за что
+  close_menu_and_not_voted: "<gradient:#00D1FF:#0085FF>Вы не проголосовали за набор. </gradient><hover:show_text:'<gray> ЛКМ - Открыть меню выбора набора'><click:run_command:/ld vote><green>Проголосуйте!</click></hover>"
 
 
 
