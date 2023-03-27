@@ -3,21 +3,16 @@ package me.vovari2.lobbyduels;
 import me.vovari2.lobbyduels.utils.ConfigUtils;
 import me.vovari2.lobbyduels.utils.InventoryUtils;
 import me.vovari2.lobbyduels.utils.TextUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public final class LD extends JavaPlugin {
 
     private static LD plugin;
-    private HashMap<String, Component> localeStrings;
-    private HashMap<String, List<Component>> localeLists;
-    private HashMap<String, String> localeTexts;
 
     public World world;
     public int periodRequests;
@@ -30,10 +25,6 @@ public final class LD extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-
-        localeStrings = new HashMap<>();
-        localeLists = new HashMap<>();
-        localeTexts = new HashMap<>();
 
         try{
             ConfigUtils.Initialization();
@@ -73,9 +64,15 @@ public final class LD extends JavaPlugin {
                         return request;
         return null;
     }
-    public LDRequest getRequest(String player1, String plaer2){
+    public LDRequest getRequest(String player1, String player2){
         for (LDRequest request : requests)
-            if (player1.equals(request.getPlayerTo().getName()) && plaer2.equals(request.getPlayerFrom().getName()) || plaer2.equals(request.getPlayerTo().getName()) && player1.equals(request.getPlayerFrom().getName()))
+            if (player1.equals(request.getPlayerTo().getName()) && player2.equals(request.getPlayerFrom().getName()) || player2.equals(request.getPlayerTo().getName()) && player1.equals(request.getPlayerFrom().getName()))
+                return request;
+        return null;
+    }
+    public LDRequest getRequest(String player){
+        for (LDRequest request : requests)
+            if (player.equals(request.getPlayerFrom().getName()) || player.equals(request.getPlayerTo().getName()))
                 return request;
         return null;
     }
@@ -92,14 +89,5 @@ public final class LD extends JavaPlugin {
     }
     public static ConsoleCommandSender getConsoleSender(){
         return plugin.getServer().getConsoleSender();
-    }
-    public static HashMap<String, Component> getLocaleStrings(){
-        return plugin.localeStrings;
-    }
-    public static HashMap<String, List<Component>> getLocaleLists(){
-        return plugin.localeLists;
-    }
-    public static HashMap<String, String> getLocaleTexts(){
-        return plugin.localeTexts;
     }
 }

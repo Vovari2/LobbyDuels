@@ -1,34 +1,49 @@
 # Для указания цветов, других функции использовалась API net.kyori.adventure, ссылка: https://docs.advntr.dev/minimessage/format.html
 # ! Это файл с надписями по умолчанию, его нельзя изменять !
-#     Нужно создать новый файл в папке "locales", заполнив параметры точно также, имя которого указав в параметре "locale" фалйа "config.yml"
-# Пример файла:       locales\ru.yml
-# Пример параметра:   locale: ru
+#     Нужно создать новый файл в папке "locales", заполнив параметры точно также, имя которого указав в параметре "locale" файла "config.yml"
+# Пример файла: locales\ru.yml
+# Пример параметра: locale: ru
 
 
-# Имена и лор предметов меню голосования за набор
 menu:
-  # Имя ивентаря с менюшкой выбора набора
+  # Имя инвентаря с менюшкой выбора набора
   name: "Выбор набора"
 
   # Предмет первого набора
   kit_start_1:
-    name: "<!italic><gradient:#FBBF89:#FD7B31>Кулачные бои</gradient>"
+    name: "<!italic><gradient:#FD7B31:#FBBF89>Кулачные бои</gradient>"
     lore:
+      - "<!italic><#FD7B31>Голосов: <green>%votes%"
+      - ""
+      - "<!italic><gray>[ЛКМ - Проголосовать]"
 
   # Предмет второго набора
   kit_start_2:
-    name: "<!italic><gradient:#A9E5FF:#2FA8FF>Стандартный набор</gradient>"
+    name: "<!italic><gradient:#2FA8FF:#A9E5FF>Стандартный набор</gradient>"
     lore:
+      - "<!italic><#2FA8FF>Голосов: <green>%votes%"
+      - ""
+      - "<!italic><gray>[ЛКМ - Проголосовать]"
+
 
   # Предмет третьего набора
   kit_start_3:
     name: "<!italic><gradient:#8F00FF:#FF0099>Топовый набор</gradient>"
     lore:
+      - "<!italic><#8F00FF>Голосов: <green>%votes%"
+      - ""
+      - "<!italic><gray>[ЛКМ - Проголосовать]"
 
-  # Предмет черной стекляной панели (фона)
+  # Предмет черной стеклянной панели (фона)
   background:
     name: ""
     lore:
+
+  # Сообщение, когда игрок закрывает меню выбора набора, при этом не проголосовав ни за что
+  close_menu_and_voted: "<gradient:#00D1FF:#0085FF>Вы не проголосовали, если захотите проголосовать </gradient><hover:show_text:'<gray> ЛКМ - Открыть меню выбора набора'><click:run_command:/ld vote><bold><green>[Проголосовать]</click></hover>"
+  # Сообщение, когда игрок закрывает меню выбора набора, при этом проголосовав
+  close_menu_and_not_voted: "<gradient:#00D1FF:#0085FF>Вы проголосовали, если захотите посмотреть результаты </gradient><hover:show_text:'<gray> ЛКМ - Открыть меню выбора набора'><click:run_command:/ld vote><bold><green>[Посмотреть]</click></hover>"
+
 
 
 
@@ -39,41 +54,44 @@ command:
 
   # Выводится, если команда введена неверно
   command_incorrectly: "<bold><red>[!] <!bold><gray>Команда введена неверно! (/ld help)"
-
   # Ошибка, когда у игрока нет брошенных ему вызовов от определенного игрока
-  have_not_request_from_player: "<bold><red>[!] <!bold><gray>Вы не имеете брошенных вам вызовов от этого игрока!"
-
+  have_not_request_from_player: "<bold><red>[!] <!bold><gray>Вы не имеете вызовов на дуэль от этого игрока!"
   # Ошибка, когда у игрока нет брошенных ему вызовов
-  have_not_request_for_you: "<bold><red>[!] <!bold><gray>Вы не имеете брошенных вам вызовов!"
-
+  have_not_request_for_you: "<bold><red>[!] <!bold><gray>Вы не имеете вызовов на дуэль!"
   # Ошибка, когда пользователь слишком часто вызывает на дуэль
   wait_send_request: "<bold><red>[!] <!bold><gray>Вы сможете вызвать на дуэль только через %time% секунд!"
-
   # Ошибка, если расстояние между игроками менее 5 блоков
   distance_too_big: "<bold><red>[!] <!bold><gray>Расстояние между вами и вашим противником, должно быть менее 5 блоков!"
 
 
+  # Сообщение игроку, если его противник вышел с сервера во время вызова или дуэли
+  your_opponent_quit: "<gradient:#00D1FF:#0085FF>Ваш оппонент, игрок <gray>%player%</gray>, вышел с сервера!"
+
+
   # Сообщение, когда игрок отправил вызов на дуэль
   you_send_request: "<gradient:#00D1FF:#0085FF>Вы вызвали игрока <gray>%player%</gray> на дуэль!</gradient> <hover:show_text:'<red>Отказаться от вызова на дуэль'><click:run_command:/ld cancel %player%><bold><red>[×]</click></hover>"
-
   # Сообщение, когда игроку отправили вызов на дуэль
   player_send_request: "<gradient:#00D1FF:#0085FF>Игрок <gray>%player%</gray> вызвал вас на дуэль</gradient> <hover:show_text:'<green>Принять вызов на дуэль'><click:run_command:/ld accept %player%><bold><green>[✓]</click></hover> <hover:show_text:'<red>Отказаться от вызова на дуэль'><click:run_command:/ld cancel %player%><bold><red>[×]</click></hover>"
 
 
   # Сообщение, когда игрок принял вызов
   you_access_request: "<gradient:#00D1FF:#0085FF>Вы приняли вызов игрока <gray>%player%</gray> </gradient>"
-
   # Сообщение, когда другой игрок принял ваш вызов
   player_access_request: "<gradient:#00D1FF:#0085FF>Игрок <gray>%player%</gray> принял ваш вызов на дуэль </gradient>"
 
   # Сообщение, когда игрок отклонил свой вызов другому игроку
-  you_cancel_your_request: "<gradient:#00D1FF:#0085FF>Вы отклонили вызов, брошенный игроку <gray>%player%</gray> </gradient>"
-
-
-
+  you_cancel_your_request: "<gradient:#00D1FF:#0085FF>Вы отклонили свой вызов на дуэль, брошенный игроку <gray>%player%</gray> </gradient>"
   # Сообщение, когда другой игрок отклонил ваш вызов
   player_cancel_your_request: "<gradient:#00D1FF:#0085FF>Игрок <gray>%player%</gray> отклонил ваш вызов на дуэль </gradient>"
   # Сообщение, когда игрок отклонил вызов другого игрока
   you_cancel_player_request: "<gradient:#00D1FF:#0085FF>Вы отклонил вызов игрока <gray>%player%</gray> </gradient>"
   # Сообщение, когда другой игрок отклонил свой вызов вам
   player_cancel_player_request: "<gradient:#00D1FF:#0085FF>Игрок <gray>%player%</gray> отклонил свой вызов на дуэль </gradient>"
+
+
+  # Ошибка, когда вы уже находится в дуэле
+  you_already_have_duel: "<bold><red>[!] <!bold><gray>У вас уже идёт дуэль!"
+  # Ошибка, когда другой игрок уже находится в дуэле
+  player_already_have_duel: "<bold><red>[!] <!bold><gray>У этого игрока уже идёт дуэль"
+  # Ошибка, когда игрок не находится в дуэле
+  you_are_not_in_duel: "<bold><red>[!] <!bold><gray>У вас сейчас не идёт дуэль!"

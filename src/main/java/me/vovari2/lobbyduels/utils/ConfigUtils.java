@@ -2,6 +2,7 @@ package me.vovari2.lobbyduels.utils;
 
 import me.vovari2.lobbyduels.LD;
 import me.vovari2.lobbyduels.LDException;
+import me.vovari2.lobbyduels.LDLocale;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -92,6 +93,7 @@ public class ConfigUtils {
         // Надписи, которые сразу можно конвертировать в Component
         String[] array = new String[] {
                 "menu.name",
+                "command.use_only_player",
                 "menu.kit_start_1.name",
                 "menu.kit_start_2.name",
                 "menu.kit_start_3.name",
@@ -99,26 +101,19 @@ public class ConfigUtils {
                 "command.command_incorrectly",
                 "command.have_not_request_from_player",
                 "command.have_not_request_for_you",
-                "command.distance_too_big"
+                "command.distance_too_big",
+                "command.you_already_have_duel",
+                "command.player_already_have_duel",
+                "command.you_are_not_in_duel",
+                "menu.close_menu_and_voted",
+                "menu.close_menu_and_not_voted"
         };
-        HashMap<String, Component> localeStrings = LD.getLocaleStrings();
+        HashMap<String, Object> localeTexts = new HashMap<>();
         for (String str : array)
-            localeStrings.put(str, convertStringToComponent(configLocale.getString(str), str, locale));
-
-        // Списки надписей, которые можно сразу конвертировать в списки Component
-        array = new String[] {
-                "menu.kit_start_1.lore",
-                "menu.kit_start_2.lore",
-                "menu.kit_start_3.lore",
-                "menu.background.lore"
-        };
-        HashMap<String, List<Component>> localeLists = LD.getLocaleLists();
-        for (String str : array)
-            localeLists.put(str, convertStringListToComponent(configLocale.getStringList(str), str, locale));
+            localeTexts.put(str, convertStringToComponent(configLocale.getString(str), str, locale));
 
         // Надписи, которые нужно оставить в виде строк
         array = new String[] {
-                "command.use_only_player",
                 "command.wait_send_request",
                 "command.you_send_request",
                 "command.player_send_request",
@@ -127,11 +122,36 @@ public class ConfigUtils {
                 "command.you_cancel_your_request",
                 "command.you_cancel_player_request",
                 "command.player_cancel_your_request",
-                "command.player_cancel_player_request"
+                "command.player_cancel_player_request",
+                "command.your_opponent_quit"
         };
-        HashMap<String, String> localeTexts = LD.getLocaleTexts();
         for (String str : array)
             localeTexts.put(str, checkString(configLocale.getString(str), str, locale));
+
+        // Списки надписей, которые можно сразу конвертировать в списки Component
+        array = new String[] {
+                "menu.background.lore"
+        };
+        HashMap<String, List<Component>> localeListComponent = new HashMap<>();
+        for (String str : array)
+            localeListComponent.put(str, convertStringListToComponent(configLocale.getStringList(str), str, locale));
+
+        // Списки надписей, которые нужно оставить в виде строк
+        array = new String[] {
+                "menu.kit_start_1.lore",
+                "menu.kit_start_2.lore",
+                "menu.kit_start_3.lore"
+        };
+        HashMap<String, List<String>> localeListString = new HashMap<>();
+        for (String str : array){
+            List<String> listStrings = new ArrayList<>();
+            for (String str2 : configLocale.getStringList(str))
+                listStrings.add(checkString(str2, str, locale));
+            localeListString.put(str, listStrings);
+        }
+
+        // Запись всех списков в основные переменные
+        LDLocale.locale = new LDLocale(localeTexts, localeListComponent, localeListString);
 
         TextUtils.sendInfoMessage("Locale file \"" + locale + ".yml\" was loaded!");
     }
