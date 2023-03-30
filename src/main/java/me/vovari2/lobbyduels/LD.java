@@ -4,7 +4,6 @@ import me.vovari2.lobbyduels.objects.LDDuel;
 import me.vovari2.lobbyduels.objects.LDException;
 import me.vovari2.lobbyduels.objects.LDRequest;
 import me.vovari2.lobbyduels.utils.ConfigUtils;
-import me.vovari2.lobbyduels.utils.InventoryUtils;
 import me.vovari2.lobbyduels.utils.TextUtils;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
@@ -23,6 +22,8 @@ public final class LD extends JavaPlugin {
     public int durationBetweenRequest;
     public int durationPolling;
 
+    public int maxPlayers;
+
     public List<LDRequest> requests;
     public List<LDDuel> duels;
 
@@ -40,7 +41,7 @@ public final class LD extends JavaPlugin {
             return;
         }
 
-        InventoryUtils.Initialization();
+        LDInventories.inventories = new LDInventories();
 
         requests = new ArrayList<>();
         duels = new ArrayList<>();
@@ -85,7 +86,7 @@ public final class LD extends JavaPlugin {
 
     public LDDuel getDuel(String player){
         for (LDDuel duel : LD.getInstance().duels)
-            if (duel.getPlayerTo().getName().equals(player) || duel.getPlayerFrom().getName().equals(player))
+            if (duel.havePlayer(player))
                 return duel;
         return null;
     }

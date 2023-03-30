@@ -16,13 +16,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ConfigUtils {
-    private static File dataFolder;
     private static FileConfiguration loadConfiguration(File file) {
         return YamlConfiguration.loadConfiguration(file);
     }
 
     public static void Initialization() throws LDException {
-        dataFolder = LD.getInstance().getDataFolder();
+        File dataFolder = LD.getInstance().getDataFolder();
 
         // Загрузка основного файла конфигурации
         if (dataFolder.mkdir())
@@ -62,6 +61,11 @@ public class ConfigUtils {
         LD.getInstance().durationRequest = checkDuration(config, "duration_request");
         LD.getInstance().durationBetweenRequest = checkDuration(config, "duration_between_request");
         LD.getInstance().durationPolling = checkDuration(config, "duration_polling");
+
+        int value = config.getInt("max_players");
+        if (value < 2)
+            throw new LDException("Value \"max_players\" must be greater than 1!");
+        LD.getInstance().maxPlayers = value;
     }
     private static int checkDuration(FileConfiguration config, String key) throws LDException{
         int value = config.getInt(key);
@@ -71,8 +75,10 @@ public class ConfigUtils {
     }
 
 
+
     // Загрузка локализации плагина
     private static void loadLocale(FileConfiguration config) throws LDException{
+        File dataFolder = LD.getInstance().getDataFolder();
         // Получение название файла локализации
         String locale = config.getString("locale");
         if (locale == null || locale.equals("")){

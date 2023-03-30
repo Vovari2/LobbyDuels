@@ -42,17 +42,12 @@ public class LDTaskSeconds extends BukkitRunnable {
 
         for (LDDuel duel : plugin.duels){
             int time = getSecondsToTime(duel.unitSecondPolling);
-            if (time < 6 && time > 0){
-                duel.getPlayerTo().sendMessage(LDLocale.replacePlaceHolders("menu.duel_start_in_time", "%time%", String.valueOf(time)));
-                duel.getPlayerFrom().sendMessage(LDLocale.replacePlaceHolders("menu.duel_start_in_time", "%time%", String.valueOf(time)));
-            }
+            if (time < 6 && time > 0)
+                duel.sendMessageAll(LDLocale.replacePlaceHolders("menu.duel_start_in_time", "%time%", String.valueOf(time)));
             if (time == 0){
                 duel.isGo = true;
-                duel.getPlayerTo().closeInventory();
-                duel.getPlayerTo().closeInventory();
-
-                duel.getPlayerTo().sendMessage(LDLocale.getLocaleComponent("menu.duel_starting"));
-                duel.getPlayerFrom().sendMessage(LDLocale.getLocaleComponent("menu.duel_starting"));
+                duel.closeInventoryAll();
+                duel.sendMessageAll(LDLocale.getLocaleComponent("menu.duel_starting"));
             }
         }
 

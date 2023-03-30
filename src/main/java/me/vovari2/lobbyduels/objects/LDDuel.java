@@ -1,11 +1,14 @@
 package me.vovari2.lobbyduels.objects;
 
 import me.vovari2.lobbyduels.*;
-import me.vovari2.lobbyduels.utils.InventoryUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LDDuel {
     public boolean isGo;
@@ -13,47 +16,75 @@ public class LDDuel {
     public Inventory menuPolling;
     public int unitSecondPolling;
 
-    private final LDDuelPlayer[] players;
+    private final List<LDDuelPlayer> players;
 
     public LDDuel(Player playerTo, Player playerFrom, Inventory menuPolling){
         this.menuPolling = menuPolling;
         unitSecondPolling = LDTaskSeconds.getSecondAfterPeriod(LD.getInstance().durationPolling);
-        this.players = new LDDuelPlayer[]{new LDDuelPlayer(playerTo), new LDDuelPlayer(playerFrom)};
+        players = new ArrayList<>();
+        players.add(new LDDuelPlayer(playerFrom));
+        players.add(new LDDuelPlayer(playerTo));
     }
-
-    public void giveVote(Player player, int index){
-        players[getIndexPlayer(player)].numberKit = index;
-        updateMenu();
-    } // Указать выбор набора у игрока
 
     public int getVote(Player player){
-        return players[getIndexPlayer(player)].numberKit;
+        for (LDDuelPlayer duelPlayer : players)
+            if (duelPlayer.getPlayer().equals(player))
+                return duelPlayer.numberKit;
+        return -1;
     } // Выбранный набор у игрока (0 по умолчанию)
+    public void setVote(Player player, int index){
+        for (LDDuelPlayer duelPlayer : players)
+            if (duelPlayer.getPlayer().equals(player))
+                duelPlayer.numberKit = index;
+        updateMenu();
+    } // Указать выбор набора у игрока
     public boolean getAlreadyVoted(Player player){
-        return players[getIndexPlayer(player)].alreadyVoted;
+        for (LDDuelPlayer duelPlayer : players)
+            if (duelPlayer.getPlayer().equals(player)){
+                return duelPlayer.alreadyVoted;
+            }
+        return false;
     } // Значение того, что игрок уже проголосовал
     public void setAlreadyVoted(Player player, boolean value){
-        players[getIndexPlayer(player)].alreadyVoted = value;
+        for (LDDuelPlayer duelPlayer : players)
+            if (duelPlayer.getPlayer().equals(player)){
+                duelPlayer.alreadyVoted = value;
+                return;
+            }
     }
-    private int getIndexPlayer(Player player){
-        return players[0].getPlayer().equals(player) ? 0 : 1;
-    } // Индекса игрока в массиве
 
-    public Player getPlayerTo() {
-        return players[0].getPlayer();
+    public int getAmountPlayers(){
+        return players.size();
     }
-    public Player getPlayerFrom() {
-        return players[1].getPlayer();
+    public boolean havePlayer(String playerName){
+        for (LDDuelPlayer duelPlayer : players)
+            if (duelPlayer.getPlayer().getName().equals(playerName))
+                return true;
+        return false;
+    } // Проверяет есть ли игрок в дуэли
+    public void addPlayer(Player player){
+        players.add(new LDDuelPlayer(player));
+    }
+    public void removePlayer(Player player){
+        players.removeIf(duelPlayer -> duelPlayer.getPlayer().equals(player));
     }
 
     private int getAmountVotes(int index){
         int amount = 0;
-        if (players[0].numberKit == index)
-            amount++;
-        if (players[1].numberKit == index)
-            amount++;
+        for (LDDuelPlayer duelPlayer : players)
+            if (duelPlayer.numberKit == index)
+                amount++;
         return amount;
     } // Количество голосов у одного набора
+
+    public void sendMessageAll(Component message){
+        for (LDDuelPlayer duelPlayer : players)
+            duelPlayer.getPlayer().sendMessage(message);
+    }
+    public void closeInventoryAll(){
+        for (LDDuelPlayer duelPlayer : players)
+            duelPlayer.getPlayer().closeInventory();
+    }
 
     public void updateMenu(){
         for (int index = 1; index < 4; index++){
@@ -67,7 +98,7 @@ public class LDDuel {
 
     public static void startDuel(LDRequest request){
         Player playerTo = request.getPlayerTo(), playerFrom = request.getPlayerFrom();
-        Inventory inventory = InventoryUtils.createVotesInventory(playerTo);
+        Inventory inventory = LDInventories.createVotesInventory(playerTo);
         playerTo.openInventory(inventory);
         playerFrom.openInventory(inventory);
         LD.getInstance().duels.add(new LDDuel(playerTo, playerFrom, inventory));

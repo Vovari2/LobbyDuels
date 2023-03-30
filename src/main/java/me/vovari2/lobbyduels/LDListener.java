@@ -7,8 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -22,6 +26,7 @@ public class LDListener implements Listener {
     // Вызов другого игрока на дуэль
     @EventHandler
     public void sendRequest(EntityDamageByEntityEvent event){
+
         if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Player) || LDTaskSeconds.offClicks.contains(event.getDamager().getName()))
             return;
 
@@ -69,10 +74,10 @@ public class LDListener implements Listener {
 
         LDDuel duel = LD.getInstance().getDuel(playerName);
         if (duel != null){
-            if (duel.getPlayerTo() == player)
-                duel.getPlayerFrom().sendMessage(LDLocale.replacePlaceHolders("command.your_opponent_quit", "%player%", duel.getPlayerTo().getName()));
-            else duel.getPlayerTo().sendMessage(LDLocale.replacePlaceHolders("command.your_opponent_quit", "%player%", duel.getPlayerFrom().getName()));
-            LD.getInstance().duels.remove(duel);
+            duel.removePlayer(player);
+            duel.sendMessageAll(LDLocale.replacePlaceHolders("command.your_opponent_quit", "%player%", playerName));
+            if (duel.getAmountPlayers() < 2)
+                LD.getInstance().duels.remove(duel);
         }
     }
 
@@ -118,13 +123,13 @@ public class LDListener implements Listener {
         ItemStack item = event.getCurrentItem();
         switch(item.getType()){
             case COD: {
-                duel.giveVote(player, 1);
+                duel.setVote(player, 1);
             } break;
             case IRON_HELMET: {
-                duel.giveVote(player, 2);
+                duel.setVote(player, 2);
             } break;
             case NETHERITE_HELMET: {
-                duel.giveVote(player, 3);
+                duel.setVote(player, 3);
             } break;
         }
 
